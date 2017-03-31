@@ -1,8 +1,9 @@
 {
-    "name": "speedblocks/bug-report-api",
+    "name": "speedblocks/sb-bug-api",
     "description": "Simple bug reporting API backend for the speedblocks game",
-    "license": "LGPL",
+    "license": "LGPLv3",
     "type": "project",
+    "version": "0.1",
     "require": {
         "php": ">=5.6.4",
         "laravel/lumen-framework": "5.4.*",

@@ -44,28 +44,52 @@
 </div>
 <script>
     var $table = $('#table'),
-        $btn = $('#get-data-btn');
+        $refreshBtn = $('#get-data-btn');
 
     $(function () {
-        $btn.click(function () {
+        if(window.localStorage) {
+            var apikey = window.localStorage.getItem('apikey');
+            if (apikey) {
+                $('#api-key').val(apikey);
+            }
+        }
+        $refreshBtn.click(function () {
             $table.bootstrapTable('refresh');
+            if(window.localStorage) {
+                window.localStorage.setItem('apikey', $('#api-key').val());
+            }
         });
     });
+
+    function deleteBug(id) {
+        console.log(id);
+        jQuery.ajax({
+            method: 'DELETE',
+            headers: {
+                'x-api-key': window.localStorage.getItem('apikey')
+            },
+            url: '/bugs/'+id
+        }).done(function (data, textStatus, jqXHR) {
+            console.log('delete succeeded! id: ', id);
+            console.log($table.bootstrapTable('remove', {field:'id', values: [id]}));
+        }).fail(function (jqXHR, textStatus, err) {
+
+        });
+    }
 
     function getData(params) {
         jQuery.extend(params,
             {
                 headers: {
-                    "x-api-key": $('#api-key').val()
+                    "x-api-key": window.localStorage.getItem('apikey')
                 },
                 url: "/bugs"
             }
         );
-        console.log(params);
         return jQuery.ajax(params);
     }
     function editColFormatter(value, row, index) {
-        return '<button class="btn"><span class="glyphicon glyphicon-remove"></span></button>' +
+        return '<button class="btn"><span onclick="deleteBug(' + row.id + ')" class="glyphicon glyphicon-remove"></span></button>' +
             '<button class="btn"><span class="glyphicon glyphicon-share"></span></button>';
     }
     function happeningColFormater (value, row, index) {
